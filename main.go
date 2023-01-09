@@ -87,7 +87,7 @@ func main() {
 
 	// フォルダ内のメールから、送信済みメールアドレスと受信メールアドレスを抽出
 	files := dirwalk(folder)
-	sendeds := []string{}
+	sent := []string{}
 	receives := []string{}
 	for _, filename := range files {
 		// フォルダ内のファイルが読めなかったら、次のファイルへ移る
@@ -104,14 +104,14 @@ func main() {
 		bccs := addrToEmails(msg.Bcc)
 		sender := addrToEmails([]eml.Address{msg.Sender})
 		log.Printf("%s: %s -> %s", filename, sender, bccs)
-		sendeds = append(sendeds, bccs...)
+		sent = append(sent, bccs...)
 		receives = append(receives, sender...)
 	}
 
 	// 返信済みアドレスを抽出: 送信済みメールの返信では無いメールが混在していた場合、無視する
 	responseds := []string{}
 	for _, receive := range receives {
-		if include(sendeds, receive) {
+		if include(sent, receive) {
 			responseds = append(responseds, receive)
 		}
 	}
@@ -119,7 +119,7 @@ func main() {
 
 	// 未返信アドレスを抽出
 	unresponses := []string{}
-	for _, sended := range sendeds {
+	for _, sended := range sent {
 		if !include(responseds, sended) {
 			unresponses = append(unresponses, sended)
 		}
