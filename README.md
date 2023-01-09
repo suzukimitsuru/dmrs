@@ -8,5 +8,5 @@
 brew install go # go1.19.4 darwin/amd64
 brew install gox
 go get github.com/sg3des/eml
-gox --osarch "windows/amd64 windows/386 darwin/amd64"
+gox --osarch "windows/amd64 darwin/amd64"
 ```
